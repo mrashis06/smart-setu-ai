@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "./components/Navbar";
-import Home from "./pages/Home.jsx";
+import Home from "./pages/Home";
 import Predictor from "./pages/Predictor";
 import Profile from "./pages/Profile";
 import GovtSchemes from "./pages/GovtSchemes";
