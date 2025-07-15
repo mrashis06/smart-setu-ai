@@ -27,6 +27,8 @@ const Navbar = () => {
       <div className="flex items-center space-x-6">
         <a href="#" className="hover:text-green-500 transition-colors">Home</a>
         <a href="#" className="hover:text-green-500 transition-colors">Login / Profile</a>
+        <a href="#" className="hover:text-green-500 transition-colors">Predictor</a>
+        <a href="#" className="hover:text-green-500 transition-colors">Govt. Schemes</a>
 
         {/* Dark Mode Toggle */}
         <button
