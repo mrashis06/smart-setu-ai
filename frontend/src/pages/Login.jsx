@@ -1,35 +1,44 @@
 import React from "react";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth, provider, db } from "../firebase";
- // make sure firebase.js exports `app`
+import { auth, provider } from "../firebase";
+import { signInWithPopup } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
-const Login = ({ setUser, setRoute }) => {
-  const handleGoogleLogin = async () => {
+const Login = () => {
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
     try {
-      const auth = getAuth(app);
-      const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+      console.log("User logged in:", user);
 
-      // Set user state and redirect to profile
-      setUser(user);
-      setRoute("profile");
+      // Save user info to localStorage
+      localStorage.setItem("user", JSON.stringify({
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        uid: user.uid
+      }));
 
-      console.log("✅ Logged in:", user);
-    } catch (err) {
-      console.error("❌ Login failed:", err);
+      // Redirect to Profile page
+      navigate("/profile");
+    } catch (error) {
+      console.error("Login failed:", error.message);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] p-4">
-      <h1 className="text-3xl font-bold mb-6">Login to SmartSetu.AI</h1>
-      <button
-        onClick={handleGoogleLogin}
-        className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-      >
-        Sign in with Google
-      </button>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg text-center">
+        <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">Login</h1>
+        <p className="mb-6 text-gray-700 dark:text-gray-300">Sign in with your Google account to continue</p>
+        <button
+          onClick={handleLogin}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded transition-all"
+        >
+          Sign in with Google
+        </button>
+      </div>
     </div>
   );
 };
