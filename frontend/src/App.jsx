@@ -1,36 +1,32 @@
-import React from "react";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import React, { useState } from "react";
 import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Features from "./components/Features";
-import UploadForm from "./components/UploadForm";
-import GovtSchemes from "./components/GovtSchemes";
-import UploadPage from "./components/UploadForm"; // or ./pages/UploadPage
-import Login from "./components/Login";
+import Home from "./pages/Home";
+import Predictor from "./pages/Predictor";
+import Profile from "./pages/Profile";
+import GovtSchemes from "./pages/GovtSchemes";
 
-function Home() {
-  return (
-    <>
-      <Hero />
-      <Features />
-    </>
-  );
-}
+const App = () => {
+  const [route, setRoute] = useState("home");
 
-function App() {
+  const renderPage = () => {
+    switch (route) {
+      case "predictor":
+        return <Predictor />;
+      case "profile":
+        return <Profile />;
+      case "govt":
+        return <GovtSchemes />;
+      default:
+        return <Home />;
+    }
+  };
+
   return (
-    <Router>
-      <div className="bg-white dark:bg-gray-950 text-gray-900 dark:text-white min-h-screen transition-colors duration-300">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/schemes" element={<GovtSchemes />} />
-          <Route path="/predictor" element={<UploadPage />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white transition-all">
+      <Navbar setRoute={setRoute} />
+      {renderPage()}
+    </div>
   );
-}
+};
 
 export default App;
