@@ -63,19 +63,30 @@ const Navbar = () => {
       {user ? (
         <>
           <Link to="/profile" onClick={() => setMenuOpen(false)}>
-            <img src={user.photo} alt="profile" className="w-8 h-8 rounded-full border border-green-500" />
+            <img
+              src={user.photo}
+              alt="profile"
+              className="w-8 h-8 rounded-full border border-green-500"
+            />
           </Link>
           <button onClick={handleLogout} className="text-sm text-red-500 hover:underline">Logout</button>
         </>
       ) : (
-        <button onClick={handleLogin} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">Login</button>
+        <button
+          onClick={handleLogin}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+        >
+          Login
+        </button>
       )}
     </>
   );
 
   return (
     <nav className="w-full px-6 py-4 bg-white dark:bg-gray-900 shadow-md flex justify-between items-center">
-      <Link to="/" className="text-xl font-bold text-green-600 dark:text-green-400">SmartSetu</Link>
+      <Link to="/" className="text-xl font-bold text-green-600 dark:text-green-400">
+        SmartSetu
+      </Link>
 
       {/* Desktop Nav */}
       <div className="hidden md:flex gap-6 items-center text-gray-700 dark:text-gray-300">
