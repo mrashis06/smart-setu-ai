@@ -1,6 +1,6 @@
 import React from "react";
 
-const schemes = [
+const GovtSchemes = [
   {
     title: "PM SVANidhi Yojana",
     description:
