@@ -4,14 +4,15 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Features from "./components/Features";
 import UploadForm from "./components/UploadForm";
-import GovtSchemes from "./components/GovtSchemes"; // 👈 separate route
+import GovtSchemes from "./components/GovtSchemes";
+import UploadPage from "./components/UploadPage"; // or ./pages/UploadPage
+import Login from "./components/Login";
 
 function Home() {
   return (
     <>
       <Hero />
       <Features />
-      <UploadForm />
     </>
   );
 }
@@ -24,6 +25,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/schemes" element={<GovtSchemes />} />
+          <Route path="/predictor" element={<UploadPage />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </Router>
