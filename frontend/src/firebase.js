@@ -5,12 +5,12 @@ import { getFirestore } from "firebase/firestore";
 
 // Replace with your actual Firebase config
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyBMaiVYfZy0HAM9yO3sNrK3blgTiLSZHmE",
+  authDomain: "smart-setu-ai.firebaseapp.com",
+  projectId: "smart-setu-ai",
+  storageBucket: "smart-setu-ai.appspot.com",
+  messagingSenderId: "212141488581",
+  appId: "1:212141488581:web:eb4a199bf4b4e22c4ef3ac"
 };
 
 const app = initializeApp(firebaseConfig);
