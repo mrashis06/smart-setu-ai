@@ -1,1 +1,24 @@
+# Node modules (frontend)
+frontend/node_modules/
+
+# Python cache & env (backend)
+backend/__pycache__/
+backend/*.pyc
+backend/env/
+backend/.env
+backend/.venv
+
+# Build files
+frontend/build/
+dist/
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/
+*.swp
 
