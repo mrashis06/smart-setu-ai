@@ -16,4 +16,5 @@ const Navbar = ({ setRoute }) => {
   );
 };
 
+
 export default Navbar;
