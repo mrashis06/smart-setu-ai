@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { auth, provider } from "../firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { Sun, Moon, Menu, X } from "lucide-react";
 
-const Navbar = () => {
+const Navbar = ({ setRoute }) => {
   const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -38,7 +36,7 @@ const Navbar = () => {
       };
       localStorage.setItem("user", JSON.stringify(userInfo));
       setUser(userInfo);
-      navigate("/profile");
+      setRoute("profile");
     } catch (err) {
       console.error("Login failed:", err.message);
     }
@@ -49,7 +47,7 @@ const Navbar = () => {
       await signOut(auth);
       localStorage.removeItem("user");
       setUser(null);
-      navigate("/");
+      setRoute("home");
     } catch (err) {
       console.error("Logout failed:", err.message);
     }
@@ -57,25 +55,36 @@ const Navbar = () => {
 
   const NavLinks = () => (
     <>
-      <Link to="/" className="hover:text-green-500" onClick={() => setMenuOpen(false)}>Home</Link>
-      <Link to="/predictor" className="hover:text-green-500" onClick={() => setMenuOpen(false)}>Predictor</Link>
-      <Link to="/schemes" className="hover:text-green-500" onClick={() => setMenuOpen(false)}>Schemes</Link>
+      <button onClick={() => { setRoute("home"); setMenuOpen(false); }} className="hover:text-green-500">Home</button>
+      <button onClick={() => { setRoute("predictor"); setMenuOpen(false); }} className="hover:text-green-500">Predictor</button>
+      <button onClick={() => { setRoute("govt"); setMenuOpen(false); }} className="hover:text-green-500">Schemes</button>
       {user ? (
         <>
-          <Link to="/profile" onClick={() => setMenuOpen(false)}>
-            <img src={user.photo} alt="profile" className="w-8 h-8 rounded-full border border-green-500" />
-          </Link>
+          <button onClick={() => { setRoute("profile"); setMenuOpen(false); }}>
+            <img
+              src={user.photo}
+              alt="profile"
+              className="w-8 h-8 rounded-full border border-green-500"
+            />
+          </button>
           <button onClick={handleLogout} className="text-sm text-red-500 hover:underline">Logout</button>
         </>
       ) : (
-        <button onClick={handleLogin} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm">Login</button>
+        <button
+          onClick={handleLogin}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+        >
+          Login
+        </button>
       )}
     </>
   );
 
   return (
     <nav className="w-full px-6 py-4 bg-white dark:bg-gray-900 shadow-md flex justify-between items-center">
-      <Link to="/" className="text-xl font-bold text-green-600 dark:text-green-400">SmartSetu</Link>
+      <button onClick={() => setRoute("home")} className="text-xl font-bold text-green-600 dark:text-green-400">
+        SmartSetu
+      </button>
 
       {/* Desktop Nav */}
       <div className="hidden md:flex gap-6 items-center text-gray-700 dark:text-gray-300">
