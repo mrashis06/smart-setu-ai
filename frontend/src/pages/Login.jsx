@@ -1,6 +1,6 @@
 import React from "react";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth, provider } from "../firebase";
+import { auth, provider, db } from "../firebase";
  // make sure firebase.js exports `app`
 
 const Login = ({ setUser, setRoute }) => {
