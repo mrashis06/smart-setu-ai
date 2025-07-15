@@ -5,7 +5,7 @@ import Hero from "./components/Hero";
 import Features from "./components/Features";
 import UploadForm from "./components/UploadForm";
 import GovtSchemes from "./components/GovtSchemes";
-import UploadPage from "./components/UploadForms"; // or ./pages/UploadPage
+import UploadPage from "./components/UploadForm"; // or ./pages/UploadPage
 import Login from "./components/Login";
 
 function Home() {
