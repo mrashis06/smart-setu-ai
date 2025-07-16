@@ -27,31 +27,27 @@ const Predictor = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setResult(null);
-    setError("");
+  e.preventDefault();
+  setLoading(true);
+  setResult(null);
+  try {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/api/predict`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-    try {
-      const res = await fetch("https://smart-setu-ai.onrender.com/api/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        setResult(data);
-      } else {
-        throw new Error(data?.error || "Prediction failed");
-      }
-    } catch (err) {
-      console.error("Prediction Error:", err);
-      setError("Prediction failed. Please try again.");
+    const data = await res.json();
+    if (res.ok) {
+      setResult(data);
+    } else {
+      throw new Error(data?.error || "Unknown prediction error");
     }
-
-    setLoading(false);
-  };
+  } catch (err) {
+    console.error("Prediction failed:", err);
+  }
+  setLoading(false);
+};
 
   return (
     <div className="max-w-2xl mx-auto p-4 text-gray-900 dark:text-white animate-fade-in">
