@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { auth, provider } from "../firebase";
+import { auth, provider } from "./firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
