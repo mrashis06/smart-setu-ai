@@ -7,7 +7,8 @@ import Predictor from "./pages/Predictor";
 import GovtSchemes from "./pages/GovtSchemes";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
-import PrivateRoute from "./components/PrivateRoute"; // ✅ Match file name exactly
+import PrivateRoute from "./components/PrivateRoute";
+import Search from "./pages/Search"; // ✅ Match file name exactly
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
             </PrivateRoute>
           }
         />
+        <Route path="/search" element={<Search />} />
       </Routes>
     </div>
   );
