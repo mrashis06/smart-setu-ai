@@ -42,7 +42,7 @@ const Home = () => {
     const interval = setInterval(() => {
       setCount((prev) => ({
         vendors: Math.min(prev.vendors + 3, 5412),
-        loans: Math.min(prev.loans + 1, 42000000),
+        loans: Math.min(prev.loans + 1, 4200000000),
         predictions: Math.min(prev.predictions + 5, 13672),
       }));
     }, 50);
