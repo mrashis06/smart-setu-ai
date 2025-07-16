@@ -1,5 +1,3 @@
-// ✅ Predictor.jsx — Enhanced Smart UI + Light/Dark Mode Fix + API Bug Fix
-
 import React, { useState } from "react";
 
 const Predictor = () => {
@@ -18,6 +16,7 @@ const Predictor = () => {
 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -31,21 +30,26 @@ const Predictor = () => {
     e.preventDefault();
     setLoading(true);
     setResult(null);
+    setError("");
+
     try {
-      const res = await fetch("/api/predict", {
+      const res = await fetch("https://smart-setu-ai.onrender.com/api/predict", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
       if (res.ok) {
         setResult(data);
       } else {
-        throw new Error(data?.error || "Unknown prediction error");
+        throw new Error(data?.error || "Prediction failed");
       }
     } catch (err) {
-      console.error("Prediction failed:", err);
+      console.error("Prediction Error:", err);
+      setError("Prediction failed. Please try again.");
     }
+
     setLoading(false);
   };
 
@@ -57,7 +61,7 @@ const Predictor = () => {
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-white dark:bg-[#111827] p-6 rounded-xl shadow-lg border border-green-500"
+        className="space-y-4 bg-white dark:bg-[#111827] p-6 rounded-xl shadow-lg border border-green-500 transition"
       >
         <input
           type="number"
@@ -165,10 +169,12 @@ const Predictor = () => {
         >
           {loading ? "Predicting..." : "Predict Loan Eligibility"}
         </button>
+
+        {error && <p className="text-red-500 mt-2">{error}</p>}
       </form>
 
       {result && (
-        <div className="mt-8 bg-white dark:bg-[#1f2937] p-6 rounded-xl border border-green-400 animate-fade-in text-gray-900 dark:text-white">
+        <div className="mt-8 bg-white dark:bg-[#1f2937] p-6 rounded-xl border border-green-400 animate-fade-in text-gray-900 dark:text-white transition">
           <h2 className="text-xl font-bold text-green-700 dark:text-green-400 mb-3">Prediction Result</h2>
           <div className="space-y-1">
             <p><strong>Credit Score:</strong> {result.creditScore}</p>
