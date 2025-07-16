@@ -1,13 +1,13 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
+import Navbar from "../components/Navbar";
 import Home from "./pages/Home";
 import Predictor from "./pages/Predictor";
 import GovtSchemes from "./pages/GovtSchemes";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
-import PrivateRoute from "./components/PrivateRoute"; // ✅ Match file name exactly
+import PrivateRoute from "../components/PrivateRoute"; // ✅ Match file name exactly
 
 const App = () => {
   return (
