@@ -1,6 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from "dotenv";
+dotenv.config(); // Only needed if you're running this outside Next.js
 
-// Initialize Gemini
+// Initialize Gemini model
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export default async function handler(req, res) {
@@ -10,17 +12,18 @@ export default async function handler(req, res) {
 
   const data = req.body;
 
-  // Optional: Validate inputs
+  // Validate inputs
   if (
     !data.monthlyTransactions ||
     !data.vendorType ||
     data.upiUsage === undefined ||
+    data.isGovtApproved === undefined ||
     !data.healthCondition
   ) {
-    return res.status(400).json({ error: "Missing required fields" });
+    return res.status(400).json({ error: "Missing required fields", data });
   }
 
-  // Build prompt
+  // Construct the prompt
   const prompt = `You're an AI loan predictor. Based on the following inputs, respond ONLY with a JSON object:
 
 Monthly Transactions: ₹${data.monthlyTransactions}
@@ -34,7 +37,7 @@ Existing Loan: ${
       : "No"
   }
 
-Respond with EXACTLY this structure and no explanation:
+Respond with EXACTLY this JSON structure and no explanation:
 {
   "creditScore": number,
   "riskFactor": number,
@@ -49,14 +52,16 @@ Respond with EXACTLY this structure and no explanation:
 }`;
 
   try {
+    // Create Gemini model instance
     const model = genAI.getGenerativeModel({ model: "models/gemini-pro" });
 
+    // Generate prediction from Gemini
     const result = await model.generateContent(prompt);
     const text = await result.response.text();
 
-    console.log("🔥 Gemini raw response:", text);
+    console.log("🔥 Raw Gemini response:\n", text);
 
-    // Extract just the JSON part
+    // Extract JSON portion from messy LLM response
     const jsonStart = text.indexOf("{");
     const jsonEnd = text.lastIndexOf("}");
     const cleanJson = text.slice(jsonStart, jsonEnd + 1);
@@ -65,14 +70,14 @@ Respond with EXACTLY this structure and no explanation:
       const parsed = JSON.parse(cleanJson);
       return res.status(200).json(parsed);
     } catch (parseErr) {
-      console.error("❌ JSON parsing failed:", parseErr.message, text);
+      console.error("❌ JSON parsing failed:", parseErr.message);
       return res.status(500).json({
         error: "Gemini returned invalid JSON",
         rawResponse: text,
       });
     }
   } catch (err) {
-    console.error("❌ Gemini API Error:", err.message || err);
+    console.error("❌ Gemini API error:", err.message || err);
     return res.status(500).json({
       error: "Prediction failed",
       details: err.message || String(err),
