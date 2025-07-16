@@ -2,7 +2,7 @@ import React from "react";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../contexts/UserContext"; // ✅
+import { useUser } from "./contexts/UserContext"; // ✅
 
 const Login = () => {
   const navigate = useNavigate();
