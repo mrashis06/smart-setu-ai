@@ -2,25 +2,26 @@ import React from "react";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../contexts/UserContext"; // ✅
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setUser } = useUser(); // ✅
 
   const handleLogin = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      console.log("User logged in:", user);
 
-      // Save user info to localStorage
-      localStorage.setItem("user", JSON.stringify({
+      const userInfo = {
         name: user.displayName,
         email: user.email,
         photo: user.photoURL,
         uid: user.uid
-      }));
+      };
 
-      // Redirect to Profile page
+      localStorage.setItem("user", JSON.stringify(userInfo));
+      setUser(userInfo); // ✅ update global state
       navigate("/profile");
     } catch (error) {
       console.error("Login failed:", error.message);
