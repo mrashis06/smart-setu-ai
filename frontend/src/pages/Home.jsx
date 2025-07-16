@@ -19,17 +19,9 @@ const features = [
 const Home = () => {
   return (
     <section className="relative min-h-screen px-6 py-16 bg-white dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300 overflow-hidden">
-      {/* 🇮🇳 Animated Indian flag bg */}
-      <div className="absolute top-0 left-0 w-full h-full z-0 opacity-5 animate-pulse">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg"
-          alt="India flag"
-          className="w-full h-full object-cover"
-        />
-      </div>
-
+      {/* Main Content */}
       <div className="relative z-10 text-center max-w-4xl mx-auto">
-        {/* 🧠 Typewriter Heading */}
+        {/* Typewriter Heading */}
         <h1 className="text-4xl md:text-5xl font-bold text-green-500 dark:text-green-400 mb-6 whitespace-nowrap overflow-hidden border-r-4 border-green-500 animate-typing">
           Welcome to Smart Setu AI
         </h1>
@@ -54,7 +46,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* 🌟 Slide-up Feature Cards */}
+      {/* Feature Cards */}
       <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
         {features.map((feature, idx) => (
           <div
@@ -71,7 +63,7 @@ const Home = () => {
         ))}
       </div>
 
-      {/* 🖼️ Illustration */}
+      {/* Illustration */}
       <div className="relative z-10 mt-20">
         <img
           src="https://illustrations.popsy.co/white/market.svg"
