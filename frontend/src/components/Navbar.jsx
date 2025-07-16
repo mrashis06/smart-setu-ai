@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { auth, provider } from "../firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { Sun, Moon, Menu, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = ({ setRoute }) => {
   const [user, setUser] = useState(null);
@@ -54,31 +55,31 @@ const Navbar = ({ setRoute }) => {
   };
 
   const NavLinks = () => (
-    <>
-      <button onClick={() => { setRoute("home"); setMenuOpen(false); }} className="hover:text-green-500">Home</button>
-      <button onClick={() => { setRoute("predictor"); setMenuOpen(false); }} className="hover:text-green-500">Predictor</button>
-      <button onClick={() => { setRoute("govt"); setMenuOpen(false); }} className="hover:text-green-500">Schemes</button>
-      {user ? (
-        <>
-          <button onClick={() => { setRoute("profile"); setMenuOpen(false); }}>
-            <img
-              src={user.photo}
-              alt="profile"
-              className="w-8 h-8 rounded-full border border-green-500"
-            />
-          </button>
-          <button onClick={handleLogout} className="text-sm text-red-500 hover:underline">Logout</button>
-        </>
-      ) : (
-        <button
-          onClick={handleLogin}
-          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
-        >
-          Login
-        </button>
-      )}
-    </>
-  );
+  <>
+    <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Home</Link>
+    <Link to="/predictor" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Predictor</Link>
+    <Link to="/govt" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Schemes</Link>
+    {user ? (
+      <>
+        <Link to="/profile" onClick={() => setMenuOpen(false)}>
+          <img
+            src={user.photo}
+            alt="profile"
+            className="w-8 h-8 rounded-full border border-green-500"
+          />
+        </Link>
+        <button onClick={handleLogout} className="text-sm text-red-500 hover:underline">Logout</button>
+      </>
+    ) : (
+      <button
+        onClick={handleLogin}
+        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+      >
+        Login
+      </button>
+    )}
+  </>
+);
 
   return (
     <nav className="w-full px-6 py-4 bg-white dark:bg-gray-900 shadow-md flex justify-between items-center">
