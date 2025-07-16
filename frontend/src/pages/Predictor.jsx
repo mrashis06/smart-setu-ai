@@ -1,3 +1,5 @@
+// ✅ Predictor.jsx — Enhanced Smart UI
+
 import React, { useState } from "react";
 
 const Predictor = () => {
@@ -44,10 +46,15 @@ const Predictor = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 text-white">
-      <h1 className="text-2xl font-bold mb-4">Smart Setu Loan Predictor</h1>
+    <div className="max-w-2xl mx-auto p-4 text-white animate-fade-in">
+      <h1 className="text-3xl font-bold mb-6 text-green-500 dark:text-green-400">
+        Smart Setu Loan Predictor
+      </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4 bg-[#111827] p-4 rounded-xl shadow-lg">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-4 bg-[#111827] p-6 rounded-xl shadow-lg border border-green-500"
+      >
         <input
           type="number"
           name="monthlyTransactions"
@@ -150,23 +157,25 @@ const Predictor = () => {
         <button
           type="submit"
           disabled={loading}
-          className="bg-green-500 text-black font-bold px-4 py-2 rounded hover:bg-green-400"
+          className="bg-green-500 text-black font-bold px-4 py-2 rounded hover:bg-green-400 transition duration-300"
         >
           {loading ? "Predicting..." : "Predict Loan Eligibility"}
         </button>
       </form>
 
       {result && (
-        <div className="mt-6 bg-[#1f2937] p-4 rounded-xl border border-green-400">
-          <h2 className="text-xl font-bold text-green-400 mb-2">Prediction Result</h2>
-          <p><strong>Credit Score:</strong> {result.creditScore}</p>
-          <p><strong>Risk Factor:</strong> {result.riskFactor}</p>
-          <p><strong>Loan Possible:</strong> {result.loanPossible}</p>
-          <p><strong>Loan Eligible:</strong> {result.loanEligible}</p>
-          <p><strong>Repayment Period:</strong> {result.repaymentPeriod}</p>
-          <div className="mt-2">
+        <div className="mt-8 bg-[#1f2937] p-6 rounded-xl border border-green-400 animate-fade-in">
+          <h2 className="text-xl font-bold text-green-400 mb-3">Prediction Result</h2>
+          <div className="space-y-1">
+            <p><strong>Credit Score:</strong> {result.creditScore}</p>
+            <p><strong>Risk Factor:</strong> {result.riskFactor}</p>
+            <p><strong>Loan Possible:</strong> {result.loanPossible}</p>
+            <p><strong>Loan Eligible:</strong> {result.loanEligible}</p>
+            <p><strong>Repayment Period:</strong> {result.repaymentPeriod}</p>
+          </div>
+          <div className="mt-3">
             <h3 className="font-semibold">Interest Rates:</h3>
-            <ul className="list-disc ml-5">
+            <ul className="list-disc ml-5 text-sm">
               <li>SBI: {result.interestRates.SBI}</li>
               <li>HDFC: {result.interestRates.HDFC}</li>
               <li>ICICI: {result.interestRates.ICICI}</li>
