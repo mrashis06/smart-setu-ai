@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const Predictor = () => {
   const [formData, setFormData] = useState({
@@ -40,26 +41,26 @@ const Predictor = () => {
       else throw new Error(data?.error || "Prediction failed");
     } catch (err) {
       console.error("Prediction failed:", err);
-      alert("Prediction failed. Please try again.");
+      toast.error("Prediction failed. Please try again.");
     }
     setLoading(false);
   };
 
   return (
     <div className={`relative max-w-2xl mx-auto p-4 text-gray-900 dark:text-white transition duration-300 ${loading ? "blur-sm pointer-events-none" : ""}`}>
+      <Toaster position="top-right" reverseOrder={false} />
+
       <h1 className="text-3xl font-bold mb-6 text-green-700 dark:text-green-400">
         Smart Setu Loan Predictor
       </h1>
 
       <form onSubmit={handleSubmit} className="space-y-4 bg-white dark:bg-[#111827] p-6 rounded-xl shadow-lg border border-green-500">
         <input type="number" name="monthlyTransactions" placeholder="Monthly Transactions (₹)" value={formData.monthlyTransactions} onChange={handleChange} required className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-black dark:text-white border border-gray-600" />
-
         <select name="vendorType" value={formData.vendorType} onChange={handleChange} className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-black dark:text-white border border-gray-600">
           <option value="Food">Food</option>
           <option value="Product">Product</option>
           <option value="Service">Service</option>
         </select>
-
         <input type="number" name="upiUsage" placeholder="UPI Usage (%)" value={formData.upiUsage} onChange={handleChange} required className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-black dark:text-white border border-gray-600" />
 
         <label className="flex items-center gap-2">
@@ -109,6 +110,26 @@ const Predictor = () => {
               <li>HDFC: {result.interestRates.HDFC}</li>
               <li>ICICI: {result.interestRates.ICICI}</li>
             </ul>
+          </div>
+
+          {/* 💹 Credit Score Bar */}
+          <div className="mt-6">
+            <h3 className="font-semibold mb-2">Credit Score Visualization</h3>
+            <div className="relative w-full h-6 bg-gray-300 dark:bg-gray-700 rounded overflow-hidden">
+              <div
+                className={`h-full transition-all duration-1000 ease-out ${
+                  result.creditScore >= 750
+                    ? "bg-green-500"
+                    : result.creditScore >= 600
+                    ? "bg-yellow-400"
+                    : "bg-red-500"
+                }`}
+                style={{ width: `${(result.creditScore / 900) * 100}%` }}
+              ></div>
+              <span className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-black dark:text-white">
+                {result.creditScore} / 900
+              </span>
+            </div>
           </div>
         </div>
       )}
