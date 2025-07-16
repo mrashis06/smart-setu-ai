@@ -30,54 +30,30 @@ const Predictor = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setResult(null);
+  e.preventDefault();
+  setLoading(true);
 
-    const prompt = `
-You're a credit advisor AI.
+  try {
+    const response = await fetch("/api/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
 
-Based on the vendor details, predict:
-1. Credit Score (300–900)
-2. Risk Factor (0–10)
-3. Is loan possible? (Yes/No)
-4. Max loan eligible (under ₹1,00,000)
-5. Show interest rates from banks like SBI, HDFC, ICICI
-6. Recommend suitable repayment tenure
+    const data = await response.json();
+    setResult(data);
+    setCustomLoan({
+      amount: data.loanEligible,
+      tenure: data.repaymentPeriod,
+    });
+  } catch (err) {
+    console.error(err);
+    setResult({ error: "Prediction failed" });
+  } finally {
+    setLoading(false);
+  }
+};
 
-Input:
-- Monthly Transactions: ${formData.monthlyTransactions}
-- Vendor Type: ${formData.vendorType}
-- UPI Usage: ${formData.upiUsage}
-- Govt Approved: ${formData.isGovtApproved ? "Yes" : "No"}
-- Existing Loan: ${formData.hasLoan ? `Yes, ₹${formData.loanAmount}, ${formData.loanTenure} yrs @ ${formData.loanInterest}%, ₹${formData.loanPaid} paid` : "No"}
-- Health Condition: ${formData.healthCondition}
-
-Respond only in JSON.
-    `;
-
-    try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-      const response = await model.generateContent(prompt);
-      const text = response.response.text();
-
-      const jsonStart = text.indexOf("{");
-      const jsonEnd = text.lastIndexOf("}");
-      const jsonString = text.substring(jsonStart, jsonEnd + 1);
-      const parsed = JSON.parse(jsonString);
-
-      setResult(parsed);
-      setCustomLoan({
-        amount: parsed.loanEligible || "₹0",
-        tenure: parsed.repaymentPeriod || "6 months",
-      });
-    } catch (error) {
-      console.error("Gemini error:", error);
-      setResult({ error: "Prediction failed. Try again." });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <section className="min-h-screen px-6 py-16 bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
