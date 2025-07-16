@@ -1,10 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import dotenv from "dotenv";
-dotenv.config(); // Only needed if you're running this outside Next.js
-
-// Initialize Gemini model
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Only POST requests allowed" });
@@ -12,75 +5,76 @@ export default async function handler(req, res) {
 
   const data = req.body;
 
-  // Validate inputs
-  if (
-    !data.monthlyTransactions ||
-    !data.vendorType ||
-    data.upiUsage === undefined ||
-    data.isGovtApproved === undefined ||
-    !data.healthCondition
-  ) {
-    return res.status(400).json({ error: "Missing required fields", data });
+  // Destructure input
+  const {
+    monthlyTransactions,
+    vendorType,
+    upiUsage,
+    isGovtApproved,
+    healthCondition,
+    hasLoan,
+    loanAmount,
+    loanTenure,
+    loanInterest,
+    loanPaid,
+  } = data;
+
+  let creditScore = 500;
+
+  // 📊 Monthly transaction impact
+  if (monthlyTransactions > 80000) creditScore += 150;
+  else if (monthlyTransactions > 50000) creditScore += 100;
+  else if (monthlyTransactions > 20000) creditScore += 50;
+
+  // 📱 UPI usage
+  if (upiUsage > 70) creditScore += 100;
+  else if (upiUsage > 40) creditScore += 50;
+
+  // ✅ Govt approval
+  if (isGovtApproved) creditScore += 50;
+
+  // 🧑‍⚕️ Health
+  if (healthCondition === "Good") creditScore += 50;
+  else if (healthCondition === "Average") creditScore += 20;
+  else creditScore -= 30;
+
+  // 💳 Existing loan
+  if (hasLoan) {
+    const loanPaidRatio = loanPaid / loanAmount;
+    if (loanPaidRatio > 0.75) creditScore += 50;
+    else if (loanPaidRatio > 0.5) creditScore += 20;
+    else creditScore -= 50;
   }
 
-  // Construct the prompt
-  const prompt = `You're an AI loan predictor. Based on the following inputs, respond ONLY with a JSON object:
+  // Cap score
+  creditScore = Math.max(300, Math.min(900, creditScore));
 
-Monthly Transactions: ₹${data.monthlyTransactions}
-Vendor Type: ${data.vendorType}
-UPI Usage: ${data.upiUsage}%
-Govt Approved: ${data.isGovtApproved ? "Yes" : "No"}
-Health: ${data.healthCondition}
-Existing Loan: ${
-    data.hasLoan
-      ? `₹${data.loanAmount} for ${data.loanTenure} years at ${data.loanInterest}% with ₹${data.loanPaid} already paid.`
-      : "No"
-  }
+  // 🧮 Risk factor: 0 (low risk) to 10 (high risk)
+  const riskFactor = parseFloat((10 - (creditScore / 90)).toFixed(2));
 
-Respond with EXACTLY this JSON structure and no explanation:
-{
-  "creditScore": number,
-  "riskFactor": number,
-  "loanPossible": string,
-  "loanEligible": string,
-  "interestRates": {
-    "SBI": string,
-    "HDFC": string,
-    "ICICI": string
-  },
-  "repaymentPeriod": string
-}`;
+  // 💰 Loan eligibility
+  const loanPossible = creditScore > 600 ? "Yes" : "No";
+  const loanEligible = creditScore > 750 ? "₹100000" : creditScore > 600 ? "₹50000" : "₹0";
 
-  try {
-    // Create Gemini model instance
-    const model = genAI.getGenerativeModel({ model: "models/gemini-pro" });
+  // 🏦 Interest rates
+  const interestRates = {
+    SBI: riskFactor > 7 ? "15%" : riskFactor > 5 ? "12%" : "9%",
+    HDFC: riskFactor > 7 ? "16%" : riskFactor > 5 ? "13%" : "10%",
+    ICICI: riskFactor > 7 ? "14%" : riskFactor > 5 ? "11.5%" : "8.5%",
+  };
 
-    // Generate prediction from Gemini
-    const result = await model.generateContent(prompt);
-    const text = await result.response.text();
+  // ⏳ Repayment period
+  let repaymentPeriod = "6 months";
+  if (creditScore > 750) repaymentPeriod = "24 months";
+  else if (creditScore > 650) repaymentPeriod = "12 months";
 
-    console.log("🔥 Raw Gemini response:\n", text);
-
-    // Extract JSON portion from messy LLM response
-    const jsonStart = text.indexOf("{");
-    const jsonEnd = text.lastIndexOf("}");
-    const cleanJson = text.slice(jsonStart, jsonEnd + 1);
-
-    try {
-      const parsed = JSON.parse(cleanJson);
-      return res.status(200).json(parsed);
-    } catch (parseErr) {
-      console.error("❌ JSON parsing failed:", parseErr.message);
-      return res.status(500).json({
-        error: "Gemini returned invalid JSON",
-        rawResponse: text,
-      });
-    }
-  } catch (err) {
-    console.error("❌ Gemini API error:", err.message || err);
-    return res.status(500).json({
-      error: "Prediction failed",
-      details: err.message || String(err),
-    });
-  }
+  // ✅ Final response
+  return res.status(200).json({
+    creditScore,
+    riskFactor,
+    loanPossible,
+    loanEligible,
+    interestRates,
+    repaymentPeriod,
+  });
 }
