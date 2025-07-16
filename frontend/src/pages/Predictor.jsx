@@ -1,4 +1,4 @@
-// ✅ Predictor.jsx — Enhanced Smart UI
+// ✅ Predictor.jsx — Enhanced Smart UI + Light/Dark Mode Fix + API Bug Fix
 
 import React, { useState } from "react";
 
@@ -38,7 +38,11 @@ const Predictor = () => {
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      setResult(data);
+      if (res.ok) {
+        setResult(data);
+      } else {
+        throw new Error(data?.error || "Unknown prediction error");
+      }
     } catch (err) {
       console.error("Prediction failed:", err);
     }
@@ -46,14 +50,14 @@ const Predictor = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 text-white animate-fade-in">
-      <h1 className="text-3xl font-bold mb-6 text-green-500 dark:text-green-400">
+    <div className="max-w-2xl mx-auto p-4 text-gray-900 dark:text-white animate-fade-in">
+      <h1 className="text-3xl font-bold mb-6 text-green-700 dark:text-green-400">
         Smart Setu Loan Predictor
       </h1>
 
       <form
         onSubmit={handleSubmit}
-        className="space-y-4 bg-[#111827] p-6 rounded-xl shadow-lg border border-green-500"
+        className="space-y-4 bg-white dark:bg-[#111827] p-6 rounded-xl shadow-lg border border-green-500"
       >
         <input
           type="number"
@@ -61,7 +65,7 @@ const Predictor = () => {
           placeholder="Monthly Transactions (₹)"
           value={formData.monthlyTransactions}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-[#1f2937] text-white border border-gray-600"
+          className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-gray-900 dark:text-white border border-gray-600"
           required
         />
 
@@ -69,7 +73,7 @@ const Predictor = () => {
           name="vendorType"
           value={formData.vendorType}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-[#1f2937] text-white border border-gray-600"
+          className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-gray-900 dark:text-white border border-gray-600"
         >
           <option value="Food">Food</option>
           <option value="Product">Product</option>
@@ -82,7 +86,7 @@ const Predictor = () => {
           placeholder="UPI Usage (%)"
           value={formData.upiUsage}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-[#1f2937] text-white border border-gray-600"
+          className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-gray-900 dark:text-white border border-gray-600"
           required
         />
 
@@ -100,7 +104,7 @@ const Predictor = () => {
           name="healthCondition"
           value={formData.healthCondition}
           onChange={handleChange}
-          className="w-full p-2 rounded bg-[#1f2937] text-white border border-gray-600"
+          className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-gray-900 dark:text-white border border-gray-600"
         >
           <option value="Good">Good</option>
           <option value="Average">Average</option>
@@ -125,7 +129,7 @@ const Predictor = () => {
               placeholder="Existing Loan Amount (₹)"
               value={formData.loanAmount}
               onChange={handleChange}
-              className="w-full p-2 rounded bg-[#1f2937] text-white border border-gray-600"
+              className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-gray-900 dark:text-white border border-gray-600"
             />
             <input
               type="number"
@@ -133,7 +137,7 @@ const Predictor = () => {
               placeholder="Loan Tenure (years)"
               value={formData.loanTenure}
               onChange={handleChange}
-              className="w-full p-2 rounded bg-[#1f2937] text-white border border-gray-600"
+              className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-gray-900 dark:text-white border border-gray-600"
             />
             <input
               type="number"
@@ -141,7 +145,7 @@ const Predictor = () => {
               placeholder="Loan Interest Rate (%)"
               value={formData.loanInterest}
               onChange={handleChange}
-              className="w-full p-2 rounded bg-[#1f2937] text-white border border-gray-600"
+              className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-gray-900 dark:text-white border border-gray-600"
             />
             <input
               type="number"
@@ -149,7 +153,7 @@ const Predictor = () => {
               placeholder="Amount Paid So Far (₹)"
               value={formData.loanPaid}
               onChange={handleChange}
-              className="w-full p-2 rounded bg-[#1f2937] text-white border border-gray-600"
+              className="w-full p-2 rounded bg-gray-100 dark:bg-[#1f2937] text-gray-900 dark:text-white border border-gray-600"
             />
           </div>
         )}
@@ -164,8 +168,8 @@ const Predictor = () => {
       </form>
 
       {result && (
-        <div className="mt-8 bg-[#1f2937] p-6 rounded-xl border border-green-400 animate-fade-in">
-          <h2 className="text-xl font-bold text-green-400 mb-3">Prediction Result</h2>
+        <div className="mt-8 bg-white dark:bg-[#1f2937] p-6 rounded-xl border border-green-400 animate-fade-in text-gray-900 dark:text-white">
+          <h2 className="text-xl font-bold text-green-700 dark:text-green-400 mb-3">Prediction Result</h2>
           <div className="space-y-1">
             <p><strong>Credit Score:</strong> {result.creditScore}</p>
             <p><strong>Risk Factor:</strong> {result.riskFactor}</p>
