@@ -8,6 +8,9 @@ const Navbar = ({ setRoute }) => {
   const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -54,40 +57,61 @@ const Navbar = ({ setRoute }) => {
     }
   };
 
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && searchTerm.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
+      setSearchTerm("");
+      setMenuOpen(false);
+    }
+  };
+
   const NavLinks = () => (
-  <>
-    <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Home</Link>
-    <Link to="/predictor" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Predictor</Link>
-    <Link to="/govt" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Schemes</Link>
-    {user ? (
-      <>
-        <Link to="/profile" onClick={() => setMenuOpen(false)}>
-          <img
-            src={user.photo}
-            alt="profile"
-            className="w-8 h-8 rounded-full border border-green-500"
-          />
-        </Link>
-        <button onClick={handleLogout} className="text-sm text-red-500 hover:underline">Logout</button>
-      </>
-    ) : (
-      <button
-        onClick={handleLogin}
-        className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
-      >
-        Login
-      </button>
-    )}
-  </>
-);
+    <>
+      <Link to="/" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Home</Link>
+      <Link to="/predictor" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Predictor</Link>
+      <Link to="/govt" onClick={() => setMenuOpen(false)} className="hover:text-green-500">Schemes</Link>
+      {user ? (
+        <>
+          <Link to="/profile" onClick={() => setMenuOpen(false)}>
+            <img
+              src={user.photo}
+              alt="profile"
+              className="w-8 h-8 rounded-full border border-green-500"
+            />
+          </Link>
+          <button onClick={handleLogout} className="text-sm text-red-500 hover:underline">Logout</button>
+        </>
+      ) : (
+        <button
+          onClick={handleLogin}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded text-sm"
+        >
+          Login
+        </button>
+      )}
+    </>
+  );
 
   return (
-    <nav className="w-full px-6 py-4 bg-white dark:bg-gray-900 shadow-md flex justify-between items-center">
-      <button onClick={() => setRoute("home")} className="text-xl font-bold text-green-600 dark:text-green-400">
+    <nav className="w-full px-6 py-4 bg-white dark:bg-gray-900 shadow-md flex justify-between items-center relative">
+      {/* Left: Logo */}
+      <Link to="/" className="text-xl font-bold text-green-600 dark:text-green-400">
         SmartSetu
-      </button>
+      </Link>
 
-      {/* Desktop Nav */}
+      {/* Middle: Search Bar */}
+      <div className="hidden md:flex flex-1 justify-center px-4">
+        <input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={handleSearch}
+          className="w-full max-w-md px-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none"
+        />
+      </div>
+
+      {/* Right: Links */}
       <div className="hidden md:flex gap-6 items-center text-gray-700 dark:text-gray-300">
         <NavLinks />
         <button onClick={toggleDarkMode} className="ml-4">
@@ -109,6 +133,15 @@ const Navbar = ({ setRoute }) => {
       {menuOpen && (
         <div className="absolute top-16 left-0 w-full bg-white dark:bg-gray-900 p-6 flex flex-col gap-4 text-center shadow-md z-10 md:hidden text-gray-700 dark:text-gray-300">
           <NavLinks />
+          {/* Mobile search bar (optional) */}
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleSearch}
+            className="w-full px-4 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none"
+          />
         </div>
       )}
     </nav>
