@@ -37,16 +37,19 @@ Respond with this structure only:
     const result = await model.generateContent(prompt);
     const text = result.response.text();
 
-    console.log("Gemini raw response:", text);
+    console.log("🔥 Gemini raw response:", text);
 
     const jsonStart = text.indexOf("{");
     const jsonEnd = text.lastIndexOf("}");
     const cleanJson = text.slice(jsonStart, jsonEnd + 1);
 
     const parsed = JSON.parse(cleanJson);
-    res.status(200).json(parsed);
+    return res.status(200).json(parsed);
   } catch (err) {
-    console.error("Gemini Error:", err);
-    res.status(500).json({ error: "Prediction failed" });
+    console.error("❌ Gemini Error:", err.message || err);
+    return res.status(500).json({
+      error: "Prediction failed",
+      details: err.message || String(err),
+    });
   }
 }
